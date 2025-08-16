@@ -1,8 +1,5 @@
-<<<<<<< HEAD
-node_modules
-node_modules
-.env
-=======
+
+
 # Logs
 logs
 *.log
@@ -142,4 +139,4 @@ dist
 # Vite logs files
 vite.config.js.timestamp-*
 vite.config.ts.timestamp-*
->>>>>>> 6a3b7b533ae3a533f9572aca5558279bd8724616
+
