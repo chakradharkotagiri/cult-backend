@@ -8,6 +8,7 @@ const { uploadToS3 } = require('../utils/s3Uploader');
 exports.register = async (req, res) => {
   try {
     const { firstName, lastName, username, email, password } = req.body;
+    const file = req.file;
 
     const existingUsername = await User.findOne({ username });
     if (existingUsername) return res.status(400).json({ error: 'Username is already taken' });
