@@ -21,6 +21,21 @@ exports.getSearchUsersSuggestions = async (req,res) => {
         console.log(err);
         res.status(500).json({error:"Server error"})
     }
-   
-
 };
+
+exports.getAllOtherUsers = async(req,res) => {
+    console.log('Current User ID:', req.user?.id, typeof req.user?.id);
+
+    try{
+        const currentUserId = req.user.id;
+        const users = await User.find ({_id: {$ne:currentUserId}}).select('username avatar');
+
+        res.status(200).json(users);
+
+    }catch(error){
+        res.status(500).json({ message: "Can't find all other users", error: error.message });
+
+    }
+
+}
+
