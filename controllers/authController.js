@@ -28,9 +28,19 @@ exports.register = async (req, res) => {
     const cultId = counter.value;
 
     let avatarUrl = null;
-    if (req.file) {
-      avatarUrl = await uploadToS3(req.file, `profile/${cultId}`);
+    console.log('req.file before upload:', file);
+
+    try{
+      if (req.file) {
+        avatarUrl = await uploadToS3(req.file, `profile/${cultId}`);
+        console.log('Avatar uploaded, URL:', avatarUrl);
+  
+      }
+    }catch (uploadErr) {
+      console.error('Error during avatar upload:', uploadErr);
+      return res.status(500).json({ error: 'Failed to upload avatar' });
     }
+    
     console.log('req.file:', req.file);
 console.log('req.body:', req.body);
 
