@@ -4,14 +4,15 @@ const path = require('path');
 const os = require('os');
 
 // Temporary file storage location
-const storage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    cb(null, os.tmpdir()); // store in temp dir
-  },
-  filename: (req, file, cb) => {
-    cb(null, Date.now() + path.extname(file.originalname)); // e.g., 123456.jpg
-  }
-});
+const storage = multer.memoryStorage()
+//   {
+//   destination: (req, file, cb) => {
+//     cb(null, os.tmpdir()); // store in temp dir
+//   },
+//   filename: (req, file, cb) => {
+//     cb(null, Date.now() + path.extname(file.originalname)); // e.g., 123456.jpg
+//   }
+// };
 
 const fileFilter = (req, file, cb) => {
   if (
