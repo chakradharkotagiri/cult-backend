@@ -7,6 +7,8 @@ const { uploadToS3 } = require('../utils/s3Uploader');
 // Register a new user
 exports.register = async (req, res) => {
   try {
+    console.log('Register controller hit');
+
     const { firstName, lastName, username, email, password } = req.body;
     const file = req.file;
 

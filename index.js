@@ -48,8 +48,15 @@ app.get('/', (req, res) => {
     res.send('Cult backend is live !');
 });
 
+app.use((err, req, res, next) => {
+  console.error('Global error handler:', err);
+  res.status(500).json({ error: err.message || 'Internal Server Error' });
+});
+
 // ✅ Start the server
 const PORT = process.env.PORT || 5002;
 app.listen(PORT, () => {
     console.log(` 🚀 Server is running on port ${PORT}`);
 });
+
+

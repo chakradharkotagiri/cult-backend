@@ -4,6 +4,9 @@ const { register, login, getCurrentUser } = require('../controllers/authControll
 const upload = require('../middlewares/multer');
 const  verifyToken  = require('../middlewares/auth'); 
 
+console.log('Register controller:', register);
+console.log('Type of register:', typeof register);
+
 router.post('/signup', upload.single('avatar'), register);
 router.post('/login', login);
 
