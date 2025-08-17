@@ -5,7 +5,64 @@ const jwt = require('jsonwebtoken');
 const { uploadToS3 } = require('../utils/s3Uploader');
 
 // Register a new user
+exports.register = async (req, res) => {
+  try {
+    const { firstName, lastName, username, email, password } = req.body;
+    const file = req.file;
 
+    const existingUsername = await User.findOne({ username });
+    if (existingUsername) return res.status(400).json({ error: 'Username is already taken' });
+
+    const existingEmail = await User.findOne({ email });
+    if (existingEmail) return res.status(400).json({ error: 'Email already registered' });
+
+    const hashed = await bcrypt.hash(password, 10);
+
+    let counter = await Counter.findOneAndUpdate(
+      { name: 'cultId' },
+      { $inc: { value: 1 } },
+      { new: true, upsert: true }
+    );
+    const cultId = counter.value;
+
+    let avatarUrl = null;
+    if (req.file) {
+      avatarUrl = await uploadToS3(req.file, `profile/${cultId}`);
+    }
+    console.log('req.file:', req.file);
+console.log('req.body:', req.body);
+
+
+    const newUser = await User.create({
+      firstName,
+      lastName,
+      username,
+      email,
+      password: hashed,
+      cultId,
+      avatar: avatarUrl,
+      followers: 0,
+      following: 0
+    });
+
+    res.status(201).json({
+      success: true,
+      message: 'User registered successfully',
+      user: {
+        id: newUser._id,
+        cultId: newUser.cultId,
+        username: newUser.username,
+        email: newUser.email,
+        followers: newUser.followers,
+        following: newUser.following,
+        avatar: newUser.avatar
+      }
+    });
+    console.log('Signup request hit');
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+};
 
 // Login existing user
 exports.login = async (req, res) => {
