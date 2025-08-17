@@ -63,19 +63,34 @@ exports.register = async (req, res) => {
 
 // Login existing user
 exports.login = async (req, res) => {
+  console.log("Login endpoint hit");
+  console.log("Request body received:", req.body);
+
   try {
     const { username, password } = req.body;
+    if (!username || !password) {
+      console.log("Missing username or password");
+      return res.status(400).json({ error: "Username and password are required" });
+    }
+
     const user = await User.findOne({ username });
-    if (!user) return res.status(400).json({ error: 'Invalid credentials' });
+    if (!user) {
+      console.log(`User not found for username: ${username}`);
+      return res.status(400).json({ error: "Invalid credentials" });
+    }
 
     const isMatch = await bcrypt.compare(password, user.password);
-    if (!isMatch) return res.status(400).json({ error: 'Invalid credentials' });
+    if (!isMatch) {
+      console.log(`Password mismatch for user: ${username}`);
+      return res.status(400).json({ error: "Invalid credentials" });
+    }
 
-    const token = jwt.sign({ id: user._id, cultId: user.cultId }, process.env.JWT_SECRET, { expiresIn: '1d' });
+    const token = jwt.sign({ id: user._id, cultId: user.cultId }, process.env.JWT_SECRET, { expiresIn: "1d" });
 
-    res.status(200).json({
+    console.log(`Login successful for user: ${username}`);
+    return res.status(200).json({
       success: true,
-      message: 'Login successful',
+      message: "Login successful",
       token,
       user: {
         _id: user._id,
@@ -87,11 +102,12 @@ exports.login = async (req, res) => {
         following: user.following,
         avatar: user.avatar,
         bio: user.bio,
-        cultId: user.cultId
-      }
+        cultId: user.cultId,
+      },
     });
-  } catch (err) {
-    res.status(500).json({ error: err.message });
+  } catch (error) {
+    console.error("Error in login handler:", error);
+    return res.status(500).json({ error: error.message });
   }
 };
 
