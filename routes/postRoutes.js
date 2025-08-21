@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const { createPost, getUserPostsByUsername,updateProfile } = require('../controllers/postController');
+const { createPost, getUserPostsByUsername,updateProfile,getUserPosts } = require('../controllers/postController');
 const postController = require('../controllers/postController');
 const auth = require('../middlewares/auth');
 const multer = require('multer');
@@ -34,6 +34,8 @@ router.put('/like/:postId', auth, postController.toggleLike);
 
 
 router.get('/username/:username', getUserPostsByUsername);
+router.get('/user/:userId', getUserPosts);
+
 router.get('/:postId', async (req, res) => {
     try {
       const post = await require('../models/Post').findById(req.params.postId);

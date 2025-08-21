@@ -114,5 +114,29 @@ exports.getUserPostsByUsername = async (req, res) => {
     }
   };
   
+  exports.getUserPosts = async (req, res) => {
+    try {
+      const { userId } = req.params; // Extract userId from URL parameter
+      
+      // Find all posts where the creator/author matches the userId
+      // Adjust the field name based on your Post schema
+      const posts = await Post.find({ 
+        userId: userId  // or createdBy: userId, or author: userId - depends on your schema
+      })
+      .populate('userId', 'username firstName lastName avatar') 
+      .sort({ createdAt: -1 }); 
+      
+   
+      res.status(200).json(posts);
+    } catch (error) {
+      console.error('Error fetching user posts:', error);
+      res.status(500).json({ 
+        message: 'Error fetching user posts', 
+        error: error.message 
+      });
+    }
+  };
+  
+
   
   

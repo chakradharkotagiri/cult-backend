@@ -28,7 +28,7 @@ exports.getAllOtherUsers = async(req,res) => {
 
     try{
         const currentUserId = req.user.id;
-        const users = await User.find ({_id: {$ne:currentUserId}}).select('username avatar');
+        const users = await User.find ({_id: {$ne:currentUserId}}).select('username avatar').limit(5);
 
         res.status(200).json(users);
 
