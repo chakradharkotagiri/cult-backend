@@ -106,6 +106,8 @@ exports.getUserPostsByUsername = async (req, res) => {
       const posts = await Post.find()
         .sort({ createdAt: -1 })
   .populate('userId', 'username firstName lastName avatar')
+  const validPosts = posts.filter(post => post.userId !== null);
+
 
             
       res.status(200).json({ posts });
@@ -126,7 +128,9 @@ exports.getUserPostsByUsername = async (req, res) => {
       .populate('userId', 'username firstName lastName avatar') 
       .sort({ createdAt: -1 }); 
       
-   
+      const validPosts = posts.filter(post => post.userId !== null);
+
+
       res.status(200).json(posts);
     } catch (error) {
       console.error('Error fetching user posts:', error);

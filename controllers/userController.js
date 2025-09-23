@@ -1,27 +1,29 @@
 const User = require('../models/User');
 
 
-exports.getSearchUsersSuggestions = async (req,res) => {
-
+exports.getSearchUsersSuggestions = async (req, res) => {
     try {
-        const searchQuery = req.query.query;
-
-        if( !searchQuery ) return res.json([]);
-
-
-        const matchingUsers = await User.find({
-            username : {$regex : '.*' + searchQuery , $options: 'i'} ,
-        })
-        .limit(10).select('username -_id');
-
-        const suggestions = matchingUsers.map(user => user.username);
-
-        res.json(suggestions);
-    }catch (err){
-        console.log(err);
-        res.status(500).json({error:"Server error"})
+      const searchQuery = req.query.query;
+      if (!searchQuery) return res.json([]);
+  
+      const matchingUsers = await User.find({
+        username: { $regex: ".*" + searchQuery, $options: "i" },
+        avatar: { $ne: null, $nin: ["", undefined] }      })
+        .limit(10)
+        .select("username avatar -_id");
+  
+      const suggestions = matchingUsers.map((user) => ({
+        username: user.username,
+        avatar: user.avatar,
+      }));
+  
+      res.json(suggestions);
+    } catch (err) {
+      console.log(err);
+      res.status(500).json({ error: "Server error" });
     }
-};
+  };
+  
 
 exports.getAllOtherUsers = async(req,res) => {
     console.log('Current User ID:', req.user?.id, typeof req.user?.id);
