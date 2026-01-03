@@ -4,11 +4,10 @@ const { createPost, getUserPostsByUsername,updateProfile,getUserPosts } = requir
 const postController = require('../controllers/postController');
 const auth = require('../middlewares/auth');
 const multer = require('multer');
-// Add this line near the top
+
 const { getAllPosts } = require('../controllers/postController');
 
 const upload = multer({ storage: multer.memoryStorage() });
-const uploadS3 = require('../middlewares/uploadS3');
 
 router.post(
   '/',
@@ -19,17 +18,16 @@ router.post(
     req.cultId = req.user.cultId;
     next();
   },
-  uploadS3('posts').single('image'),
-  createPost // now handled in the controller
+  upload.single('image'),
+  createPost 
 );
 
 
 
 
-// Create a new post
 
 router.put('/update-profile/:userId', upload.single("profileImage"), updateProfile);
-// routes/postRoutes.js
+
 router.put('/like/:postId', auth, postController.toggleLike);
 
 
@@ -50,7 +48,7 @@ router.get('/:postId', async (req, res) => {
   router.get('/', getAllPosts);
   
 
-// Get posts for a specific user
+
 
 
 module.exports = router;

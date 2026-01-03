@@ -1,5 +1,5 @@
 const Post = require('../models/Post');
-const User = require('../models/User'); // ✅ Add this
+const User = require('../models/User'); 
 
 const { uploadToS3 } = require('../utils/s3Uploader');
 
@@ -59,10 +59,10 @@ exports.getUserPostsByUsername = async (req, res) => {
         lastName: lastName ?? existingUser.lastName,
         cultId: existingUser.cultId,
         email: existingUser.email,
-        bio: bio ?? existingUser.bio, // ✅ this correctly handles empty or present bio
+        bio: bio ?? existingUser.bio, 
       };
   
-      // Handle profile image upload
+ 
       if (req.file) {
         const imageUrl = await uploadToS3(req.file, `profile/${userId}`);
         updateData.avatar = imageUrl;
@@ -88,9 +88,9 @@ exports.getUserPostsByUsername = async (req, res) => {
   
       const index = post.likes.indexOf(userId);
       if (index === -1) {
-        post.likes.push(userId); // like
+        post.likes.push(userId); 
       } else {
-        post.likes.splice(index, 1); // unlike
+        post.likes.splice(index, 1); 
       }
   
       await post.save();
@@ -100,7 +100,7 @@ exports.getUserPostsByUsername = async (req, res) => {
     }
   };
 
-  // Add this in postController.js
+  
   exports.getAllPosts = async (req, res) => {
     try {
       const posts = await Post.find()
@@ -118,12 +118,11 @@ exports.getUserPostsByUsername = async (req, res) => {
   
   exports.getUserPosts = async (req, res) => {
     try {
-      const { userId } = req.params; // Extract userId from URL parameter
+      const { userId } = req.params; 
       
-      // Find all posts where the creator/author matches the userId
-      // Adjust the field name based on your Post schema
+     
       const posts = await Post.find({ 
-        userId: userId  // or createdBy: userId, or author: userId - depends on your schema
+        userId: userId 
       })
       .populate('userId', 'username firstName lastName avatar') 
       .sort({ createdAt: -1 }); 

@@ -4,7 +4,7 @@ const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const { uploadToS3 } = require('../utils/s3Uploader');
 
-// Register a new user
+
 exports.register = async (req, res) => {
   try {
     console.log('Register controller hit');
@@ -76,7 +76,7 @@ console.log('req.body:', req.body);
   }
 };
 
-// Login existing user
+
 exports.login = async (req, res) => {
   console.log("Login endpoint hit");
   console.log("Request body received:", req.body);
@@ -126,7 +126,7 @@ exports.login = async (req, res) => {
   }
 };
 
-// ✅ GET /api/auth/me – get user from token
+
 exports.getCurrentUser = async (req, res) => {
   try {
     const user = await User.findById(req.user.id).select('-password');

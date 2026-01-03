@@ -10,7 +10,7 @@ console.log('Type of register:', typeof register);
 router.post('/signup', upload.single('avatar'), register);
 router.post('/login', login);
 
-//  New route to get current logged-in user
+
 router.get('/me', verifyToken, getCurrentUser);
 
 module.exports = router;

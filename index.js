@@ -5,17 +5,13 @@ const connectDB = require('./config/db');
 const path = require('path');
 const cors = require('cors');
 
-
-
-
 const app = express();
 
 
-// ✅ Connect to MongoDB
 connectDB();
 const allowedOrigins = [
-    process.env.FRONTEND_URL,        // e.g. prod URL
-    "http://localhost:5173"          // dev URL
+    process.env.FRONTEND_URL,        
+    "http://localhost:5173"          
   ];
 
   app.use((req, res, next) => {
@@ -24,7 +20,7 @@ const allowedOrigins = [
   });
   
 
-// ✅ Middleware should come before routes
+
 app.use(cors({
     origin: function (origin, callback) {
       if (!origin || allowedOrigins.includes(origin)) {
@@ -35,10 +31,9 @@ app.use(cors({
     },
     credentials: true
   }));
-app.use(express.json()); // For JSON body parsing
-app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+app.use(express.json()); 
 
-// ✅ Routes
+
 app.use('/api/auth', require('./routes/authRoutes'));
 app.use('/api/posts', require('./routes/postRoutes'));
 app.use('/api/', require('./routes/userRoutes'))
@@ -53,7 +48,7 @@ app.use((err, req, res, next) => {
   res.status(500).json({ error: err.message || 'Internal Server Error' });
 });
 
-// ✅ Start the server
+
 const PORT = process.env.PORT || 5002;
 app.listen(PORT, () => {
     console.log(` 🚀 Server is running on port ${PORT}`);
