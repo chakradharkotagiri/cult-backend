@@ -1,3 +1,4 @@
+const mongoose = require('mongoose');
 const Post = require('../models/Post');
 const User = require('../models/User'); 
 
@@ -68,7 +69,8 @@ exports.getUserPostsByUsername = async (req, res) => {
         updateData.avatar = imageUrl;
       }
   
-      const updatedUser = await User.findByIdAndUpdate(userId, updateData, { new: true });
+      const updatedUser = await User.findByIdAndUpdate(userId, updateData, { new: true })
+        .select('-password');
   
       res.status(200).json({ updatedUser });
     } catch (err) {
@@ -120,6 +122,8 @@ exports.getUserPostsByUsername = async (req, res) => {
     try {
       const { userId } = req.params; 
       
+      // A malformed ID can't own posts, same as a valid ID with none.
+      if (!mongoose.isValidObjectId(userId)) return res.status(200).json([]);
      
       const posts = await Post.find({ 
         userId: userId 

@@ -44,6 +44,9 @@ app.get('/', (req, res) => {
 });
 
 app.use((err, req, res, next) => {
+  // Undecodable URL param (/api/users/%ZZ): fails before any route handler runs.
+  if (err instanceof URIError) return res.status(404).json({ error: 'Not found' });
+
   console.error('Global error handler:', err);
   res.status(500).json({ error: err.message || 'Internal Server Error' });
 });

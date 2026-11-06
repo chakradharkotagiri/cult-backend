@@ -26,7 +26,19 @@ router.post(
 
 
 
-router.put('/update-profile/:userId', upload.single("profileImage"), updateProfile);
+router.put(
+  '/update-profile/:userId',
+  auth,
+  // Runs before multer so a rejected request never buffers its upload.
+  (req, res, next) => {
+    if (req.user.id !== req.params.userId) {
+      return res.status(403).json({ error: "You can only update your own profile." });
+    }
+    next();
+  },
+  upload.single("profileImage"),
+  updateProfile
+);
 
 router.put('/like/:postId', auth, postController.toggleLike);
 
